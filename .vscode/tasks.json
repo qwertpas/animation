@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+
+    "tasks": [
+        {
+            "label": "manimL",
+            "type": "shell",
+            "command": "cd swervevisuals && manim ${file} Run -pql && read",
+        },
+        {
+            "label": "manimH",
+            "type": "shell",
+            "command": "cd swervevisuals && manim ${file} Run -pqh && read",
+        }
+    ],
+    
+}
