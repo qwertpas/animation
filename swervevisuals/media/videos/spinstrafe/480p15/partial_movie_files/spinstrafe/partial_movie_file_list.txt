@@ -1,0 +1,3 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/chris/VSCode/animation/swervevisuals/media/videos/spinstrafe/480p15/partial_movie_files/spinstrafe/3163782288_1438405338_50852207.mp4'
+file 'file:/Users/chris/VSCode/animation/swervevisuals/media/videos/spinstrafe/480p15/partial_movie_files/spinstrafe/1495979052_3561011079_2338392043.mp4'

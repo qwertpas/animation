@@ -1,5 +1,4 @@
 from manim import *
-from manim.mobject.geometry import ArrowTriangleFilledTip
 from numpy import sign
 class Run(Scene):
     def construct(self):
@@ -7,7 +6,7 @@ class Run(Scene):
         robot = Square(fill_color=BLUE, fill_opacity=1, color=DARK_BLUE).move_to(ORIGIN)
         turncenter = Dot(color=RED)
         turncircle = Circle(color=RED).scale(0)
-        arrow = Arrow(ORIGIN, robot.get_center(), buff=0, color=WHITE)
+        arrow = Arrow(robot.get_center(), ORIGIN, buff=0, color=WHITE)
 
         self.add(robot, turncenter, turncircle, arrow)
     
@@ -17,7 +16,7 @@ class Run(Scene):
             radius = np.linalg.norm(center)
             new_turncenter = Dot(color=RED).move_to(center)
             new_turncircle = Circle(color=RED).scale(radius).move_to(center)
-            new_arrow = Arrow(center, robot.get_center(), buff=0, color=WHITE)
+            new_arrow = Arrow(robot.get_center(), center, buff=0, color=WHITE)
             text = Text("(" + str(round(center[0])) + ", " + str(round(center[1])) + ")", size=0.5)
             if(radius < 5): text.move_to(center + 0.4 * DOWN)
             else: text.move_to(sign(center[1]) * 3 * UP + LEFT * 2)
