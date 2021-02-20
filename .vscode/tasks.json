@@ -5,7 +5,7 @@
         {
             "label": "manimL",
             "type": "shell",
-            "command": "cd swervevisuals && manim ${file} Run -o ${fileBasenameNoExtension} -pql && read",
+            "command": "cd swervevisuals && manim ${file} Run -o ${fileBasenameNoExtension} -pql",
         },
         {
             "label": "manimH",
