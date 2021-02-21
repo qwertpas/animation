@@ -1,19 +1,26 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-          "type": "python",
-          "request": "launch",
-          "name": "manim low",
-          "preLaunchTask": "manimL",
-          "program": "${file}"
-        },
-        {
-            "type": "python",
-            "request": "launch",
-            "name": "manim high",
-            "preLaunchTask": "manimH",
-            "program": "${file}"
-          }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "manim low",
+      "preLaunchTask": "manimL",
+      "program": "${file}"
+    },
+    {
+      "type": "python",
+      "request": "launch",
+      "name": "manim high",
+      "preLaunchTask": "manimH",
+      "program": "${file}"
+    }
+  ]
+}
