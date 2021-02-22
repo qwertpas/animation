@@ -1,5 +1,5 @@
 from manim import *
-from numpy import arctan2, sign
+from numpy import arctan2, diff, sign
 from numpy.linalg import norm
 
 class Run(MovingCameraScene):
@@ -99,65 +99,136 @@ class Run(MovingCameraScene):
             self.wait(0.5)
 
             self.play(
-                FadeOut(turncircle0),
+                # FadeOut(turncircle0),
                 FadeOut(turncircle1),
                 FadeOut(turncircle2),
                 FadeOut(turncircle3),
+                FadeOut(module1),
+                FadeOut(module2),
+                FadeOut(module3),
             )
 
         # wiggle_angle(2.1 * RIGHT + 0.1 * UP)
         wiggle_angle(1.6 * LEFT + 2 * UP)
 
+        radiuslabel = MathTex("\\vec{r}", size=0.5).next_to(arrow, ORIGIN).shift(LEFT * 0.3)
 
         robotdot = Dot(robot.get_center())
-        robotlabel = Text("robot center", size=0.5).next_to(robotdot, LEFT)
 
+        module0dot = Dot(robot.get_center() + pos0, color=GREEN_E)
 
+        placement = Arrow(robot.get_center(), module0dot.get_center(), buff=0, color=GREEN_E)
+        placementlabel = MathTex("\\vec{p}", size=0.5).next_to(module0dot.get_center(), RIGHT).shift(0.8*LEFT + DOWN*0.1)
 
-        module3dot = Dot(robot.get_center() + pos3, color=GREEN_E)
-        modulelabel = Text("module", size=0.5).next_to(module3dot, DOWN)
-
-        placement = Arrow(robot.get_center(), (robot.get_center() + pos3)[0], buff=0, color=GREEN_E)
-        placementlabel = MathTex("\\vec{p}", size=0.5).next_to(placement, LEFT).shift(DOWN * 0.2 + RIGHT * 0.5)
-
-        linvel = Arrow(robot.get_center(), 1.6 * UP + 2 * RIGHT, buff=0, color=RED)
-        linvellabel = MathTex("\\vec{v}", size=0.5).next_to(linvel, ORIGIN).shift(RIGHT * 0.2)
-        angvel = CurvedArrow(0.5*RIGHT + 0.5 * DOWN, 0.5 * LEFT + 0.5*UP, color=RED).move_arc_center_to(1.2 * UP + 1.6 * RIGHT)
+        linvel = arrow.copy().rotate(-PI/2, about_point=robot.get_center()).set_color(RED)
+        linvellabel = MathTex("\\vec{v}", size=0.5).next_to(linvel, ORIGIN).shift(DOWN * 0.3)
+        angvel = CurvedArrow(0.2*RIGHT + 0.4 * DOWN, 0.4 * LEFT + 0.6*UP, color=RED).move_arc_center_to(linvel.get_last_point())
         angvellabel = Text("ω", size=0.5).next_to(angvel)
+        rightangle = Rectangle(height=0.2, width=0.2, stroke_width=6).next_to(robotdot, ORIGIN).shift(RIGHT*0.08 + UP*0.12).rotate(linvel.get_angle())
 
 
-        self.play(self.camera_frame.animate.scale(0.7).move_to(robot.get_center() + UP))
-
+        self.play(self.camera_frame.animate.scale(0.5).move_to(module0dot.get_center() + UP*0.8))
 
         self.play(
+            ShowCreation(radiuslabel)
+        )
+
+        self.wait(1)
+
+        self.play(
+            ShowCreation(rightangle),
             Transform(turncircle, linvel, run_time=1),
             ShowCreation(linvellabel),
             ShowCreation(angvel),
             ShowCreation(angvellabel),
         )
 
-        self.play(
-            FadeOut(module0),
-            FadeOut(module1),
-            FadeOut(module2),
-        )
+
+        self.wait(0.5)
 
         self.play(
             Transform(robot, robotdot, run_time=2),
-            ShowCreation(robotlabel),
         )
+
+        self.wait(0.5)
+
         self.play(
-            Transform(module3, module3dot, run_time=2),
-            ShowCreation(modulelabel),
+            Transform(module0, module0dot, run_time=2),
         )
+
         self.play(
             ShowCreation(placement),
             ShowCreation(placementlabel)
         )
 
 
+        self.camera_frame.save_state()
 
+        wheeltotc = Arrow(module0dot.get_center(), arrow.get_end(), buff=0, color=BLUE)
+        wheeltotclabel = MathTex("\\vec{r_w}", size=0.5).next_to(wheeltotc.get_center(), RIGHT)
 
+        self.play(
+            ShowCreation(wheeltotc),
+            ShowCreation(wheeltotclabel),
+        )
 
+        self.wait(1)
+
+        self.play(
+            FadeOut(turncircle),
+            FadeOut(linvellabel),
+            FadeOut(angvel),
+            FadeOut(angvellabel),
+        )
+
+        sumeq = MathTex(
+            "\\vec{r}",
+            "=",
+            "\\vec{p}",
+            "+",
+            "\\vec{r_w}",
+        ).move_to(RIGHT*1.8)
+
+        sumeq[2].set_color(GREEN_E)
+        sumeq[4].set_color(BLUE)
+
+        self.play(
+            ShowCreation(sumeq)
+        )
         self.wait(0.5)
+        self.play(
+            Indicate(sumeq[0]),
+            ShowPassingFlash(arrow.copy().set_color(GREEN_SCREEN), time_width=0.2),
+        )
+        self.wait(0.5)
+        self.play(
+            Indicate(sumeq[2]),
+            ShowPassingFlash(placement.copy().set_color(GREEN_SCREEN), time_width=0.2),
+        )
+        self.wait(0.5)
+        self.play(
+            Indicate(sumeq[4]),
+            ShowPassingFlash(wheeltotc.copy().set_color(GREEN_SCREEN), time_width=0.2),
+        )
+
+        diffeq = MathTex(
+            "\\vec{r_w}",
+            "=",
+            "\\vec{r}",
+            "-",
+            "\\vec{p}",
+        ).next_to(sumeq, DOWN).shift(LEFT*0.27)
+        diffeq[4].set_color(GREEN_E)
+        diffeq[0].set_color(BLUE)
+        self.play(
+            Transform(sumeq.copy()[4], diffeq[0]),
+            Transform(sumeq.copy()[1], diffeq[1]),
+            Transform(sumeq.copy()[0], diffeq[2]),
+            Transform(sumeq.copy()[3], diffeq[3]),
+            Transform(sumeq.copy()[2], diffeq[4]),
+        )
+
+
+
+        self.wait(1)
 
