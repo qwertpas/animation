@@ -5,12 +5,12 @@
         {
             "label": "manimL",
             "type": "shell",
-            "command": "cd swervevisuals && manim ${file} Run -o ${fileBasenameNoExtension} -pql",
+            "command": "cd ${fileDirname} && manim ${file} Run -o ${fileBasenameNoExtension} -pql",
         },
         {
             "label": "manimH",
             "type": "shell",
-            "command": "cd swervevisuals && manim ${file} Run -o ${fileBasenameNoExtension} -pqh && read",
+            "command": "cd ${fileDirname} && manim ${file} Run -o ${fileBasenameNoExtension} -pqh && read",
         }
     ],
     
