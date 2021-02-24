@@ -112,6 +112,7 @@ class Run(MovingCameraScene):
         wiggle_angle(1.6 * LEFT + 2 * UP)
 
         radiuslabel = MathTex("\\vec{r}", size=0.5).next_to(arrow, ORIGIN).shift(LEFT * 0.3)
+        requilvalent = MathTex("=(\\frac{\\vec{v}}{\\omega}).rot(90^{\circ })", size=0.1).next_to(radiuslabel, ORIGIN).shift(DOWN*0.5 + LEFT * 0.3).scale(0.4)
 
         robotdot = Dot(robot.get_center())
 
@@ -122,8 +123,8 @@ class Run(MovingCameraScene):
 
         linvel = arrow.copy().rotate(-PI/2, about_point=robot.get_center()).set_color(RED)
         linvellabel = MathTex("\\vec{v}", size=0.5).next_to(linvel, ORIGIN).shift(DOWN * 0.3)
-        angvel = CurvedArrow(0.2*RIGHT + 0.4 * DOWN, 0.4 * LEFT + 0.6*UP, color=RED).move_arc_center_to(linvel.get_last_point())
-        angvellabel = Text("ω", size=0.5).next_to(angvel)
+        angvel = CurvedArrow(0.2*RIGHT + 0.3 * DOWN, 0.4 * LEFT + 0.1*UP, color=RED).move_arc_center_to(arrow.get_end())
+        angvellabel = Text("ω", size=0.5).next_to(angvel, RIGHT*0.5)
         rightangle = Rectangle(height=0.2, width=0.2, stroke_width=6).next_to(robotdot, ORIGIN).shift(RIGHT*0.08 + UP*0.12).rotate(linvel.get_angle())
 
 
@@ -137,29 +138,46 @@ class Run(MovingCameraScene):
 
         self.play(
             ShowCreation(rightangle),
-            Transform(turncircle, linvel, run_time=1),
+            ShowCreation(linvel),
             ShowCreation(linvellabel),
             ShowCreation(angvel),
             ShowCreation(angvellabel),
         )
 
 
-        self.wait(0.5)
+        self.wait(1)
 
         self.play(
             Transform(robot, robotdot, run_time=2),
         )
 
         self.wait(0.5)
+        self.play(
+            ShowCreation(requilvalent, run_time=2)
+        )
+        self.wait(2)
+        self.play(
+            Transform(linvel.copy(), arrow, run_time=2)
+        )
+        self.wait(2)
+
+        self.play(
+            FadeOut(turncircle)
+        )
+        self.wait(0.5)
 
         self.play(
             Transform(module0, module0dot, run_time=2),
         )
 
+        self.wait(0.5)
+
         self.play(
             ShowCreation(placement),
             ShowCreation(placementlabel)
         )
+
+        self.wait(0.5)
 
 
         self.camera_frame.save_state()
@@ -175,10 +193,11 @@ class Run(MovingCameraScene):
         self.wait(1)
 
         self.play(
-            FadeOut(turncircle),
+            FadeOut(linvel),
             FadeOut(linvellabel),
             FadeOut(angvel),
             FadeOut(angvellabel),
+            FadeOut(rightangle)
         )
 
         sumeq = MathTex(
@@ -187,7 +206,7 @@ class Run(MovingCameraScene):
             "\\vec{p}",
             "+",
             "\\vec{r_w}",
-        ).move_to(RIGHT*1.8)
+        ).move_to(RIGHT*2 + UP*0.5)
 
         sumeq[2].set_color(GREEN_E)
         sumeq[4].set_color(BLUE)
@@ -211,6 +230,8 @@ class Run(MovingCameraScene):
             ShowPassingFlash(wheeltotc.copy().set_color(GREEN_SCREEN), time_width=0.2),
         )
 
+        self.wait(1)
+
         diffeq = MathTex(
             "\\vec{r_w}",
             "=",
@@ -229,6 +250,31 @@ class Run(MovingCameraScene):
         )
 
 
+
+        self.wait(1)
+
+        bigeq = MathTex(
+            "\\vec{r_w}",
+            "=",
+            "(\\frac{\\vec{v}}{\\omega}).rot(90^{\circ })",
+            "-",
+            "\\vec{p}",
+        ).next_to(sumeq, DOWN*2.1).shift(LEFT*0.27).scale(0.5)
+        bigeq[4].set_color(GREEN_E)
+        bigeq[0].set_color(BLUE)
+
+        self.play(
+            ShowCreation(bigeq, run_time=2),
+            Transform(requilvalent, bigeq[2])
+        )
+        self.wait(0.5)
+        self.play(
+            Indicate(diffeq[2])
+        )
+
+        self.play(
+            Indicate(bigeq[2])
+        )
 
         self.wait(1)
 
